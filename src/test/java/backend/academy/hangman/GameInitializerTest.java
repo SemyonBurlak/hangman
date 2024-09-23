@@ -2,17 +2,23 @@ package backend.academy.hangman;
 
 import backend.academy.hangman.config.Category;
 import backend.academy.hangman.config.Difficulty;
+import backend.academy.hangman.config.Word;
 import backend.academy.hangman.game.GameInitializer;
 import backend.academy.hangman.io.ConsoleInput;
 import backend.academy.hangman.io.ConsoleOutput;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class GameInitializerTest {
     ConsoleOutput consoleOutput = new ConsoleOutput(new PrintStream(new ByteArrayOutputStream()));
+    Word testWord = new Word("ELEPHANT", "Big and gray");
+    Map<Category, Set<Word>> testWordsDictionary =
+        Map.of(Category.ANIMALS, Set.of(testWord));
 
     @Test
     void testDifficultySelection() {
@@ -40,17 +46,12 @@ public class GameInitializerTest {
     }
 
     @Test
-    void testGetRandomWordWithCategory() {
+    void testGetRandomWordFromCategory() {
         ConsoleInput consoleInput =
             new ConsoleInput(new ByteArrayInputStream("3\n1\n1\ntest_stop\ntest_stop".getBytes()));
         GameInitializer gameInitializer = new GameInitializer(consoleInput, consoleOutput);
         gameInitializer.showMainMenu();
-        Assertions.assertTrue(
-            gameInitializer.getRandomWordWithCategory(gameInitializer.settings().category()).word()
-                .equals("FROG") ||
-                gameInitializer.getRandomWordWithCategory(gameInitializer.settings().category()).word()
-                    .equals("ELEPHANT")
-        );
+        Assertions.assertEquals(gameInitializer.getRandomWordFromCategory(Category.ANIMALS, testWordsDictionary), testWord);
 
     }
 }

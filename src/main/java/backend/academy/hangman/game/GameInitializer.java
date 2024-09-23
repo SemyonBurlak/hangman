@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import lombok.Getter;
 
 /**
@@ -50,28 +52,38 @@ public class GameInitializer {
     @SuppressWarnings("MagicNumber")
     public void showMainMenu() {
         List<String> mainMenuOptions = Arrays.asList("START GAME", "SELECT DIFFICULTY", "SELECT CATEGORY");
+        // Main menu loop
         loop:
         while (true) {
             consoleOutput.showMainMenu(settings.difficulty(), settings.category(), mainMenuOptions);
             try {
-                String selectedOption = consoleInput.getMenuOption(mainMenuOptions.size());
-                if (selectedOption.equals(DebugCommand.STOP_GAME_LOOP.command())) {
+                String selectedOptionString = consoleInput.getMenuOption(mainMenuOptions.size());
+                if (selectedOptionString.equals(DebugCommand.STOP_GAME_LOOP.command())) {
                     break;
                 }
+                int selectedOption = Integer.parseInt(selectedOptionString);
                 switch (selectedOption) {
-                    case "1" -> {
+                    case 1 -> {
                         initializeGameSession();
                         break loop;
                     }
-                    case "2" -> showDifficultySelection();
-                    case "3" -> showCategorySelection();
-                    case "0" -> System.exit(0);
+                    case 2 -> showDifficultySelection();
+                    case 3 -> showCategorySelection();
+                    case 0 -> {
+                        break loop;
+                    }
                     default -> throw new InputMismatchException();
                 }
             } catch (InputMismatchException e) {
                 consoleOutput.showInputMismatchMenuOptionMessage();
             }
         }
+    }
+
+    public Word getRandomWordFromCategory(Category category, Map<Category, Set<Word>> wordDictionary)
+        throws NullPointerException {
+        List<Word> wordsWithCategory = new ArrayList<>(wordDictionary.get(category));
+        return wordsWithCategory.get(random.nextInt(wordsWithCategory.size()));
     }
 
     private void showDifficultySelection() {
@@ -104,14 +116,15 @@ public class GameInitializer {
     private void initializeGameSession() {
         try {
             // Set random difficulty if difficulty not selected
-            settings.getDifficultyFallbackToRandom();
+            settings.setDifficulty(settings.getDifficultyFallbackToRandom());
             // Get random word from category.
             // If category not selected set random category and get word from this category
-            Word word = getRandomWordWithCategory(settings.getCategoryFallbackToRandom());
+            Word word = getRandomWordFromCategory(settings.getCategoryFallbackToRandom(), WordsDictionary.WORDS);
             // Check that word and hint are longer than 2 symbols and consists of Latin letters
             if (!word.checkIsWordCorrect()) {
                 throw new InputMismatchException(
-                    "Word and hint should be longer than 2 symbols and consists of Latin letters");
+                    "Word and hint should be longer than 2 symbols and consists of Latin letters"
+                );
             }
 
             GameSession gameSession = new GameSession(word, settings, consoleInput, consoleOutput);
@@ -120,11 +133,6 @@ public class GameInitializer {
             consoleOutput.showWordNotFoundMessage();
             showCategorySelection();
         }
-    }
-
-    public Word getRandomWordWithCategory(Category category) throws NullPointerException {
-        List<Word> wordsWithCategory = new ArrayList<>(WordsDictionary.WORDS.get(category));
-        return wordsWithCategory.get(random.nextInt(wordsWithCategory.size()));
     }
 
 }

@@ -37,8 +37,10 @@ public class GameSession {
      * Starts the game session and manages the gameplay loop.
      */
     public void startGameSession() {
+        // Session loop
         while (true) {
             String letter = getLetter();
+            // Check stop command
             if (letter.equals(DebugCommand.STOP_GAME_LOOP.command())) {
                 break;
             }
@@ -67,6 +69,7 @@ public class GameSession {
     }
 
     public void makeNextStep(String letter) {
+        // Check right step and that the letter haven't been guessed already
         boolean stepResult =
             GameRulesChecker.isStepRight(word, letter) && !sessionState.guessedCharacters().contains(letter);
         if (stepResult) {
@@ -82,6 +85,7 @@ public class GameSession {
             consoleOutput.showGameField(sessionState, settings, word, isHintVisible);
             try {
                 letter = consoleInput.getNextLetter();
+                // Return the command if it has been entered
                 if (letter.equals(DebugCommand.STOP_GAME_LOOP.command())) {
                     return letter;
                 }
