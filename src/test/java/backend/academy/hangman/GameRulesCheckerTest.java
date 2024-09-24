@@ -9,11 +9,11 @@ public class GameRulesCheckerTest {
     Word testWord = new Word("TESTWORD", "HINT");
 
     @Test
-    public void isStepRight_CorrectLetter_ReturnsTrue() {
-        Assertions.assertTrue(GameRulesChecker.isStepRight(testWord, "T"));
+    public void isLetterRight_CorrectLetter_ReturnsTrue() {
+        Assertions.assertTrue(GameRulesChecker.isLetterRight(testWord, "T"));
     }
     @Test
-    public void isStepRight_IncorrectLetter_ReturnsFalse() {
-        Assertions.assertFalse(GameRulesChecker.isStepRight(testWord, "Z"));
+    public void isLetterRight_IncorrectLetter_ReturnsFalse() {
+        Assertions.assertFalse(GameRulesChecker.isLetterRight(testWord, "Z"));
     }
 }

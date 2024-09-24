@@ -71,7 +71,7 @@ public class GameSession {
     public void makeNextStep(String letter) {
         // Check right step and that the letter haven't been guessed already
         boolean stepResult =
-            GameRulesChecker.isStepRight(word, letter) && !sessionState.guessedCharacters().contains(letter);
+            GameRulesChecker.isLetterRight(word, letter) && !sessionState.guessedCharacters().contains(letter);
         if (stepResult) {
             sessionState.addGuessedCharacter(letter);
         } else {

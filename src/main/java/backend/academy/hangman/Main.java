@@ -8,6 +8,5 @@ public class Main {
     public static void main(String[] args) {
         GameInitializer gameInitializer = new GameInitializer(System.in, System.out);
         gameInitializer.showMainMenu();
-
     }
 }

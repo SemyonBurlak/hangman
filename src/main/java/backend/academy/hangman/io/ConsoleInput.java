@@ -14,7 +14,7 @@ public class ConsoleInput {
     private final Scanner scanner;
 
     public ConsoleInput(InputStream inputStream) {
-        scanner = new Scanner(inputStream);
+        this.scanner = new Scanner(inputStream);
     }
 
     public String getMenuOption(int numberOfOptions) {

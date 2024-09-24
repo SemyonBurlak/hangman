@@ -5,7 +5,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class GameRulesChecker {
-    public static boolean isStepRight(Word word, String letter) {
+    public static boolean isLetterRight(Word word, String letter) {
         return word.word().contains(letter);
     }
 }

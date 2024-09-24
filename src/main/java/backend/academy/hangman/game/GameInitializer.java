@@ -122,8 +122,8 @@ public class GameInitializer {
             Word word = getRandomWordFromCategory(settings.getCategoryFallbackToRandom(), WordsDictionary.WORDS);
             // Check that word and hint are longer than 2 symbols and consists of Latin letters
             if (!word.checkIsWordCorrect()) {
-                throw new InputMismatchException(
-                    "Word and hint should be longer than 2 symbols and consists of Latin letters"
+                throw new IllegalArgumentException(
+                    "Word should be longer than 2 symbols and consists of Latin letters and hint should be not empty."
                 );
             }
 
