@@ -2,8 +2,6 @@ package backend.academy.hangman.config;
 
 import lombok.Getter;
 
-
-
 @Getter
 public enum Difficulty {
     EASY(7),

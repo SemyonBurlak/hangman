@@ -45,13 +45,4 @@ public class GameInitializerTest {
         Assertions.assertNotNull(gameInitializer.settings().difficulty());
     }
 
-    @Test
-    void testGetRandomWordFromCategory() {
-        ConsoleInput consoleInput =
-            new ConsoleInput(new ByteArrayInputStream("3\n1\n1\ntest_stop\ntest_stop".getBytes()));
-        GameInitializer gameInitializer = new GameInitializer(consoleInput, consoleOutput);
-        gameInitializer.showMainMenu();
-        Assertions.assertEquals(gameInitializer.getRandomWordFromCategory(Category.ANIMALS, testWordsDictionary), testWord);
-
-    }
 }

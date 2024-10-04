@@ -35,13 +35,13 @@ public class ConsoleInput {
     }
 
     public String getNextLetter() throws InputMismatchException {
-        String stringChar = scanner.nextLine();
-        if (handleDebugCommand(Set.of(DebugCommand.STOP_GAME_LOOP), stringChar)) {
-            return stringChar;
+        String stringLetter = scanner.nextLine();
+        if (handleDebugCommand(Set.of(DebugCommand.STOP_GAME_LOOP), stringLetter)) {
+            return stringLetter;
         }
         Pattern pattern = Pattern.compile("[A-Za-z]");
-        if (pattern.matcher(stringChar).matches()) {
-            return stringChar.toUpperCase();
+        if (pattern.matcher(stringLetter).matches()) {
+            return stringLetter.toUpperCase();
         }
         throw new InputMismatchException("Letter expected");
     }

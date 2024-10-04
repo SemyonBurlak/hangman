@@ -20,27 +20,27 @@ public class GameSessionTest {
     ConsoleOutput consoleOutput = new ConsoleOutput(new PrintStream(new ByteArrayOutputStream()));
 
     @Test
-    public void testMakeNextStepCorrectUppercaseLetter() {
+    public void testProcessGuessStepCorrectUppercaseLetter() {
         ConsoleInput consoleInput = new ConsoleInput(new ByteArrayInputStream("A\ntest_stop".getBytes()));
         GameSession session = new GameSession(word, settings, consoleInput, consoleOutput);
         session.startGameSession();
-        assertTrue(session.sessionState().guessedCharacters().contains("A"));
+        assertTrue(session.sessionState().guessedLetters().contains("A"));
     }
 
     @Test
-    public void testMakeNextStepCorrectLowercaseLetter() {
+    public void testProcessGuessStepCorrectLowercaseLetter() {
         ConsoleInput consoleInput = new ConsoleInput(new ByteArrayInputStream("a\ntest_stop".getBytes()));
         GameSession session = new GameSession(word, settings, consoleInput, consoleOutput);
         session.startGameSession();
-        assertTrue(session.sessionState().guessedCharacters().contains("A"));
+        assertTrue(session.sessionState().guessedLetters().contains("A"));
     }
 
     @Test
-    public void testMakeNextStepIncorrectInput() {
+    public void testProcessGuessStepIncorrectInput() {
         ConsoleInput consoleInput = new ConsoleInput(new ByteArrayInputStream("AP\ntest_stop".getBytes()));
         GameSession session = new GameSession(word, settings, consoleInput, consoleOutput);
         session.startGameSession();
-        assertTrue(session.sessionState().guessedCharacters().isEmpty());
+        assertTrue(session.sessionState().guessedLetters().isEmpty());
         assertEquals(session.sessionState().attemptsLeft(), Difficulty.EASY.attempts());
     }
 
@@ -49,7 +49,7 @@ public class GameSessionTest {
         ConsoleInput consoleInput = new ConsoleInput(new ByteArrayInputStream("A\nA\ntest_stop".getBytes()));
         GameSession session = new GameSession(word, settings, consoleInput, consoleOutput);
         session.startGameSession();
-        assertTrue(session.sessionState().guessedCharacters().contains("A"));
+        assertTrue(session.sessionState().guessedLetters().contains("A"));
         assertEquals(session.sessionState().attemptsLeft(), settings.difficulty().attempts() - 1);
     }
 
@@ -58,7 +58,7 @@ public class GameSessionTest {
         ConsoleInput consoleInput = new ConsoleInput(new ByteArrayInputStream("A\nP\nL\nE".getBytes()));
         GameSession session = new GameSession(word, settings, consoleInput, consoleOutput);
         session.startGameSession();
-        assertTrue(session.sessionState().isWinCondition());
+        assertTrue(session.sessionState().winCondition());
     }
 
     @Test
@@ -66,6 +66,6 @@ public class GameSessionTest {
         ConsoleInput consoleInput = new ConsoleInput(new ByteArrayInputStream("Z\nZ\nZ\nZ\nZ\nZ\nZ\n".getBytes()));
         GameSession session = new GameSession(word, settings, consoleInput, consoleOutput);
         session.startGameSession();
-        assertTrue(session.sessionState().isLoseCondition());
+        assertTrue(session.sessionState().loseCondition());
     }
 }

@@ -11,13 +11,9 @@ import backend.academy.hangman.io.ConsoleInput;
 import backend.academy.hangman.io.ConsoleOutput;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import lombok.Getter;
 
 /**
@@ -29,27 +25,28 @@ public class GameInitializer {
     private final ConsoleOutput consoleOutput;
     @Getter
     private final Settings settings;
-    private final Random random;
+
+    private static final int INITIALIZE_GAME_SESSION_OPTION = 1;
+    private static final int ASK_FOR_DIFFICULTY_SELECTION_OPTION = 2;
+    private static final int ASK_FOR_CATEGORY_SELECTION_OPTION = 3;
+    private static final int EXIT_GAME_OPTION = 0;
 
     public GameInitializer(InputStream inputStream, PrintStream printStream) {
         this.consoleInput = new ConsoleInput(inputStream);
         this.consoleOutput = new ConsoleOutput(printStream);
         this.settings = new Settings();
-        this.random = new Random();
     }
 
     public GameInitializer(ConsoleInput consoleInput, ConsoleOutput consoleOutput) {
         this.consoleInput = consoleInput;
         this.consoleOutput = consoleOutput;
         this.settings = new Settings();
-        this.random = new Random();
     }
 
     /**
      * Displays the main menu options and processes user input to navigate between starting the game,
      * selecting difficulty, or selecting a category.
      */
-    @SuppressWarnings("MagicNumber")
     public void showMainMenu() {
         List<String> mainMenuOptions = Arrays.asList("START GAME", "SELECT DIFFICULTY", "SELECT CATEGORY");
         // Main menu loop
@@ -63,13 +60,13 @@ public class GameInitializer {
                 }
                 int selectedOption = Integer.parseInt(selectedOptionString);
                 switch (selectedOption) {
-                    case 1 -> {
+                    case INITIALIZE_GAME_SESSION_OPTION -> {
                         initializeGameSession();
                         break loop;
                     }
-                    case 2 -> showDifficultySelection();
-                    case 3 -> showCategorySelection();
-                    case 0 -> {
+                    case ASK_FOR_DIFFICULTY_SELECTION_OPTION -> askPlayerForDifficulty();
+                    case ASK_FOR_CATEGORY_SELECTION_OPTION -> askPlayerForCategory();
+                    case EXIT_GAME_OPTION -> {
                         break loop;
                     }
                     default -> throw new InputMismatchException();
@@ -80,18 +77,12 @@ public class GameInitializer {
         }
     }
 
-    public Word getRandomWordFromCategory(Category category, Map<Category, Set<Word>> wordDictionary)
-        throws NullPointerException {
-        List<Word> wordsWithCategory = new ArrayList<>(wordDictionary.get(category));
-        return wordsWithCategory.get(random.nextInt(wordsWithCategory.size()));
-    }
-
-    private void showDifficultySelection() {
+    private void askPlayerForDifficulty() {
         List<Difficulty> difficulties = List.of(Difficulty.values());
         settings.setDifficulty(selectOptionFromSubmenu(difficulties, Submenu.DIFFICULTIES));
     }
 
-    private void showCategorySelection() {
+    private void askPlayerForCategory() {
         List<Category> categories = List.of(Category.values());
         settings.setCategory(selectOptionFromSubmenu(categories, Submenu.CATEGORIES));
     }
@@ -119,19 +110,13 @@ public class GameInitializer {
             settings.setDifficulty(settings.getDifficultyFallbackToRandom());
             // Get random word from category.
             // If category not selected set random category and get word from this category
-            Word word = getRandomWordFromCategory(settings.getCategoryFallbackToRandom(), WordsDictionary.WORDS);
-            // Check that word and hint are longer than 2 symbols and consists of Latin letters
-            if (!word.checkIsWordCorrect()) {
-                throw new IllegalArgumentException(
-                    "Word should be longer than 2 symbols and consists of Latin letters and hint should be not empty."
-                );
-            }
+            Word word = WordsDictionary.getRandomWordFromCategory(settings.getCategoryFallbackToRandom());
 
             GameSession gameSession = new GameSession(word, settings, consoleInput, consoleOutput);
             gameSession.startGameSession();
         } catch (NullPointerException e) {
             consoleOutput.showWordNotFoundMessage();
-            showCategorySelection();
+            askPlayerForCategory();
         }
     }
 

@@ -28,7 +28,7 @@ public class ConsoleOutput {
         printStream.println("CATEGORY: " + settings.category());
         printStream.println("HINT: " + (isHintVisible ? word.hint() : "NOT AVAILABLE"));
         printStream.println();
-        showGuessingWord(word, sessionState.guessedCharacters());
+        showGuessingWord(word, sessionState.guessedLetters());
     }
 
     public void showMainMenu(Difficulty difficulty, Category category, List<String> mainMenuOptions) {
@@ -92,7 +92,7 @@ public class ConsoleOutput {
 
     private void showGuessingWord(Word word, Set<String> guessedCharacters) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (String letter : word.word().split("")) {
+        for (String letter : word.content().split("")) {
             if (guessedCharacters.contains(letter)) {
                 stringBuilder.append(letter);
             } else {

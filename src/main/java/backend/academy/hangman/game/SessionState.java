@@ -3,34 +3,38 @@ package backend.academy.hangman.game;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Represents the state of the game session, tracking the player's progress.
  */
 @Getter
 public class SessionState {
-    private final Set<String> guessedCharacters;
+    private final Set<String> guessedLetters;
     private int attemptsLeft;
-    @Setter
-    private boolean isWinCondition;
-    @Setter
-    private boolean isLoseCondition;
+    private boolean winCondition;
+    private boolean loseCondition;
 
     public SessionState(int attemptsLeft) {
         this.attemptsLeft = attemptsLeft;
-        guessedCharacters = new HashSet<>();
+        guessedLetters = new HashSet<>();
 
-        this.isWinCondition = false;
-        this.isLoseCondition = false;
-
+        this.winCondition = false;
+        this.loseCondition = false;
     }
 
     public void addGuessedCharacter(String character) {
-        guessedCharacters.add(character);
+        guessedLetters.add(character);
     }
 
     public void decrementAttemptsLeft() {
         attemptsLeft--;
+    }
+
+    public void win() {
+        winCondition = true;
+    }
+
+    public void lose() {
+        loseCondition = true;
     }
 }

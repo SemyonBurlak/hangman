@@ -19,6 +19,7 @@ import lombok.Getter;
 public class GameSession {
     private final Settings settings;
     private final Word word;
+    private final Set<String> wordLetters;
     private final boolean isHintVisible;
     private final SessionState sessionState;
     private final ConsoleInput consoleInput;
@@ -31,6 +32,9 @@ public class GameSession {
         this.sessionState = new SessionState(settings.difficulty().attempts());
         this.consoleInput = consoleInput;
         this.consoleOutput = consoleOutput;
+
+        this.wordLetters = new HashSet<>();
+        Collections.addAll(wordLetters, word.content().split(""));
     }
 
     /**
@@ -39,39 +43,39 @@ public class GameSession {
     public void startGameSession() {
         // Session loop
         while (true) {
-            String letter = getLetter();
+            String letter = askPlayerForLetter();
             // Check stop command
             if (letter.equals(DebugCommand.STOP_GAME_LOOP.command())) {
                 break;
             }
-            makeNextStep(letter);
+            processGuessStep(letter);
 
             // Check if the player has guessed all the letters
-            if (getSetOfWordLetters().equals(sessionState.guessedCharacters())) {
+            if (wordLetters.size() == sessionState.guessedLetters().size()
+                && wordLetters.equals(sessionState.guessedLetters())) {
                 consoleOutput.showGameField(sessionState, settings, word, isHintVisible);
-                sessionState.isWinCondition(true);
+                sessionState.win();
                 break;
             }
-
             // Check if the player has run out of attempts
             if (sessionState.attemptsLeft() == 0) {
                 consoleOutput.showGameField(sessionState, settings, word, isHintVisible);
-                sessionState.isLoseCondition(true);
+                sessionState.lose();
                 break;
             }
         }
-        if (sessionState.isWinCondition()) {
+        if (sessionState.winCondition()) {
             consoleOutput.showWinMessage();
         }
-        if (sessionState.isLoseCondition()) {
-            consoleOutput.showLoseMessage(word.word());
+        if (sessionState.loseCondition()) {
+            consoleOutput.showLoseMessage(word.content());
         }
     }
 
-    public void makeNextStep(String letter) {
+    public void processGuessStep(String letter) {
         // Check right step and that the letter haven't been guessed already
         boolean stepResult =
-            GameRulesChecker.isLetterRight(word, letter) && !sessionState.guessedCharacters().contains(letter);
+            word.containsLetter(letter) && !sessionState.guessedLetters().contains(letter);
         if (stepResult) {
             sessionState.addGuessedCharacter(letter);
         } else {
@@ -79,7 +83,7 @@ public class GameSession {
         }
     }
 
-    private String getLetter() {
+    private String askPlayerForLetter() {
         String letter;
         while (true) {
             consoleOutput.showGameField(sessionState, settings, word, isHintVisible);
@@ -96,11 +100,4 @@ public class GameSession {
         }
         return letter;
     }
-
-    private Set<String> getSetOfWordLetters() {
-        Set<String> setOfWordLetters = new HashSet<>();
-        Collections.addAll(setOfWordLetters, word.word().split(""));
-        return setOfWordLetters;
-    }
-
 }

@@ -3,9 +3,9 @@ package backend.academy.hangman.config;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-@SuppressWarnings({"MultipleStringLiterals", "MemberName"})
+@SuppressWarnings("MultipleStringLiterals")
 public class TextRenderer {
-    public final String[] STAGES  = {
+    public final static String[] STAGES  = {
 
             """
 
@@ -96,7 +96,7 @@ public class TextRenderer {
             """,
     };
 
-    public final String MAIN_MENU_LOGO =
+    public final static String MAIN_MENU_LOGO =
         """
         +=======================+
         |                       |
@@ -105,7 +105,7 @@ public class TextRenderer {
         +=======================+
         """;
 
-    public final String CATEGORY_SUBMENU_HEADER =
+    public final static String CATEGORY_SUBMENU_HEADER =
         """
         +==============+
         |              |
@@ -115,7 +115,7 @@ public class TextRenderer {
         """;
 
 
-    public final String DIFFICULTY_SUBMENU_HEADER =
+    public final static String DIFFICULTY_SUBMENU_HEADER =
         """
         +=====================+
         |                     |
